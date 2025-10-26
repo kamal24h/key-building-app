@@ -28,7 +28,7 @@ import {
 } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { useToast } from '../hooks/use-toast';
-import { Megaphone, Plus, Pencil, Archive, Send, FileText, Filter } from 'lucide-react';
+import { Megaphone, Plus, Pencil, Archive, Send, FileText, Filter, Calendar, Tag } from 'lucide-react';
 
 interface Building {
   _id: string;
@@ -41,6 +41,7 @@ interface Announcement {
   _uid: string;
   title: string;
   content: string;
+  category: string;
   priority: 'low' | 'normal' | 'high' | 'urgent';
   target_role: 'all' | 'admin' | 'manager' | 'resident';
   target_building_id: string;
@@ -53,10 +54,21 @@ interface Announcement {
 interface FormData {
   title: string;
   content: string;
+  category: string;
   priority: 'low' | 'normal' | 'high' | 'urgent';
   target_role: 'all' | 'admin' | 'manager' | 'resident';
   target_building_id: string;
 }
+
+const categories = [
+  { value: 'general', label: 'General', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' },
+  { value: 'maintenance', label: 'Maintenance', color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' },
+  { value: 'event', label: 'Event', color: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300' },
+  { value: 'emergency', label: 'Emergency', color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' },
+  { value: 'billing', label: 'Billing', color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' },
+  { value: 'policy', label: 'Policy', color: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-300' },
+  { value: 'community', label: 'Community', color: 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-300' },
+];
 
 export default function AnnouncementsPage() {
   const { user } = useAuthStore();
@@ -68,10 +80,14 @@ export default function AnnouncementsPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [filterPriority, setFilterPriority] = useState<string>('all');
+  const [filterCategory, setFilterCategory] = useState<string>('all');
+  const [dateFrom, setDateFrom] = useState<string>('');
+  const [dateTo, setDateTo] = useState<string>('');
   
   const [formData, setFormData] = useState<FormData>({
     title: '',
     content: '',
+    category: 'general',
     priority: 'normal',
     target_role: 'all',
     target_building_id: '',
@@ -100,7 +116,6 @@ export default function AnnouncementsPage() {
         description: 'Failed to load data',
         variant: 'destructive',
       });
-      console.error('Load data error:', error);
     } finally {
       setLoading(false);
     }
@@ -156,7 +171,6 @@ export default function AnnouncementsPage() {
         description: 'Failed to save announcement',
         variant: 'destructive',
       });
-      console.error('Submit error:', error);
     }
   };
 
@@ -190,7 +204,7 @@ export default function AnnouncementsPage() {
         link: '/announcements',
         is_read: 'false',
         created_at: new Date().toISOString(),
-        related_id: '', // Will be set after announcement is created
+        related_id: '',
       }));
 
       await Promise.all(notifications.map(notif => 
@@ -206,6 +220,7 @@ export default function AnnouncementsPage() {
     setFormData({
       title: announcement.title,
       content: announcement.content,
+      category: announcement.category || 'general',
       priority: announcement.priority,
       target_role: announcement.target_role,
       target_building_id: announcement.target_building_id,
@@ -224,11 +239,10 @@ export default function AnnouncementsPage() {
         published_at: new Date().toISOString(),
       };
 
-      const { _id, _uid, ...updatedRest } = updatedData;
       await table.updateItem('f26wla7m4wlc', {
         _uid: announcement._uid || user?.uid || '',
         _id: id,
-        ...updatedRest,
+        ...updatedData,
       });
       await createNotifications(updatedData);
       
@@ -240,7 +254,6 @@ export default function AnnouncementsPage() {
         description: 'Failed to publish announcement',
         variant: 'destructive',
       });
-      console.error('Publish error:', error);
     }
   };
 
@@ -248,15 +261,14 @@ export default function AnnouncementsPage() {
     try {
       const announcement = announcements.find(a => a._id === id);
       if (!announcement) return;
-      const { _id, _uid, ...announcementRest } = announcement;
+
       await table.updateItem('f26wla7m4wlc', {
         _uid: announcement._uid || user?.uid || '',
         _id: id,
-        ...announcementRest,
+        ...announcement,
         status: 'archived',
       });
       toast({ title: 'Success', description: 'Announcement archived successfully' });
-      loadData();
       loadData();
     } catch (error) {
       toast({
@@ -264,7 +276,6 @@ export default function AnnouncementsPage() {
         description: 'Failed to archive announcement',
         variant: 'destructive',
       });
-      console.error('Archive error:', error);
     }
   };
 
@@ -272,11 +283,20 @@ export default function AnnouncementsPage() {
     setFormData({
       title: '',
       content: '',
+      category: 'general',
       priority: 'normal',
       target_role: 'all',
       target_building_id: '',
     });
     setEditingId(null);
+  };
+
+  const clearFilters = () => {
+    setFilterStatus('all');
+    setFilterPriority('all');
+    setFilterCategory('all');
+    setDateFrom('');
+    setDateTo('');
   };
 
   const getPriorityColor = (priority: string) => {
@@ -298,9 +318,26 @@ export default function AnnouncementsPage() {
     }
   };
 
+  const getCategoryStyle = (category: string) => {
+    const cat = categories.find(c => c.value === category);
+    return cat?.color || 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300';
+  };
+
   const filteredAnnouncements = announcements.filter(announcement => {
+    // Status filter
     if (filterStatus !== 'all' && announcement.status !== filterStatus) return false;
+    
+    // Priority filter
     if (filterPriority !== 'all' && announcement.priority !== filterPriority) return false;
+    
+    // Category filter
+    if (filterCategory !== 'all' && announcement.category !== filterCategory) return false;
+    
+    // Date range filter
+    const announcementDate = announcement.published_at || announcement.created_at;
+    if (dateFrom && announcementDate < dateFrom) return false;
+    if (dateTo && announcementDate > dateTo + 'T23:59:59') return false;
+    
     return true;
   });
 
@@ -310,6 +347,12 @@ export default function AnnouncementsPage() {
     drafts: announcements.filter(a => a.status === 'draft').length,
     urgent: announcements.filter(a => a.priority === 'urgent' && a.status === 'published').length,
   };
+
+  // Category statistics
+  const categoryStats = categories.map(cat => ({
+    ...cat,
+    count: announcements.filter(a => a.category === cat.value && a.status === 'published').length,
+  }));
 
   if (loading) {
     return (
@@ -376,39 +419,129 @@ export default function AnnouncementsPage() {
         </Card>
       </div>
 
-      {/* Filters */}
+      {/* Category Statistics */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Filter className="h-5 w-5" />
-            Filters
+            <Tag className="h-5 w-5" />
+            Categories Overview
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex gap-4">
-          <Select value={filterStatus} onValueChange={setFilterStatus}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="published">Published</SelectItem>
-              <SelectItem value="draft">Draft</SelectItem>
-              <SelectItem value="archived">Archived</SelectItem>
-            </SelectContent>
-          </Select>
+        <CardContent>
+          <div className="flex flex-wrap gap-3">
+            {categoryStats.map((cat) => (
+              <div
+                key={cat.value}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg border bg-card"
+              >
+                <Badge variant="secondary" className={cat.color}>
+                  {cat.label}
+                </Badge>
+                <span className="text-sm font-semibold">{cat.count}</span>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
-          <Select value={filterPriority} onValueChange={setFilterPriority}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Priority" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Priorities</SelectItem>
-              <SelectItem value="urgent">Urgent</SelectItem>
-              <SelectItem value="high">High</SelectItem>
-              <SelectItem value="normal">Normal</SelectItem>
-              <SelectItem value="low">Low</SelectItem>
-            </SelectContent>
-          </Select>
+      {/* Advanced Filters */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <Filter className="h-5 w-5" />
+              Filters
+            </CardTitle>
+            <Button variant="ghost" size="sm" onClick={clearFilters}>
+              Clear All
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="text-sm font-medium mb-2 block">Status</label>
+              <Select value={filterStatus} onValueChange={setFilterStatus}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="published">Published</SelectItem>
+                  <SelectItem value="draft">Draft</SelectItem>
+                  <SelectItem value="archived">Archived</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium mb-2 block">Priority</label>
+              <Select value={filterPriority} onValueChange={setFilterPriority}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Priority" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Priorities</SelectItem>
+                  <SelectItem value="urgent">Urgent</SelectItem>
+                  <SelectItem value="high">High</SelectItem>
+                  <SelectItem value="normal">Normal</SelectItem>
+                  <SelectItem value="low">Low</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium mb-2 block">Category</label>
+              <Select value={filterCategory} onValueChange={setFilterCategory}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat.value} value={cat.value}>
+                      {cat.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium mb-2 flex items-center gap-2">
+                <Calendar className="h-4 w-4" />
+                Date From
+              </label>
+              <Input
+                type="date"
+                value={dateFrom}
+                onChange={(e) => setDateFrom(e.target.value)}
+                placeholder="Start date"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium mb-2 flex items-center gap-2">
+                <Calendar className="h-4 w-4" />
+                Date To
+              </label>
+              <Input
+                type="date"
+                value={dateTo}
+                onChange={(e) => setDateTo(e.target.value)}
+                placeholder="End date"
+              />
+            </div>
+          </div>
+
+          <div className="pt-2 border-t">
+            <p className="text-sm text-muted-foreground">
+              Showing <span className="font-semibold text-foreground">{filteredAnnouncements.length}</span> of{' '}
+              <span className="font-semibold text-foreground">{announcements.length}</span> announcements
+            </p>
+          </div>
         </CardContent>
       </Card>
 
@@ -420,9 +553,13 @@ export default function AnnouncementsPage() {
               <Megaphone className="h-12 w-12 text-muted-foreground mb-4" />
               <h3 className="text-lg font-semibold mb-2">No announcements found</h3>
               <p className="text-muted-foreground text-center mb-4">
-                {(isAdmin || isManager) ? 'Create your first announcement to keep everyone informed' : 'Check back later for updates'}
+                {announcements.length === 0 
+                  ? (isAdmin || isManager) 
+                    ? 'Create your first announcement to keep everyone informed' 
+                    : 'Check back later for updates'
+                  : 'Try adjusting your filters to see more results'}
               </p>
-              {(isAdmin || isManager) && (
+              {(isAdmin || isManager) && announcements.length === 0 && (
                 <Button onClick={() => { resetForm(); setDialogOpen(true); }}>
                   <Plus className="mr-2 h-4 w-4" />
                   Create Announcement
@@ -432,12 +569,15 @@ export default function AnnouncementsPage() {
           </Card>
         ) : (
           filteredAnnouncements.map((announcement) => (
-            <Card key={announcement._id}>
+            <Card key={announcement._id} className="hover:shadow-md transition-shadow">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="space-y-1 flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
                       <CardTitle>{announcement.title}</CardTitle>
+                      <Badge variant="secondary" className={getCategoryStyle(announcement.category)}>
+                        {categories.find(c => c.value === announcement.category)?.label || announcement.category}
+                      </Badge>
                       <Badge className={getPriorityColor(announcement.priority)}>
                         {announcement.priority}
                       </Badge>
@@ -531,6 +671,25 @@ export default function AnnouncementsPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
+                <label className="text-sm font-medium">Category</label>
+                <Select
+                  value={formData.category}
+                  onValueChange={(value: any) => setFormData({ ...formData, category: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((cat) => (
+                      <SelectItem key={cat.value} value={cat.value}>
+                        {cat.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
                 <label className="text-sm font-medium">Priority</label>
                 <Select
                   value={formData.priority}
@@ -547,24 +706,24 @@ export default function AnnouncementsPage() {
                   </SelectContent>
                 </Select>
               </div>
+            </div>
 
-              <div>
-                <label className="text-sm font-medium">Target Audience</label>
-                <Select
-                  value={formData.target_role}
-                  onValueChange={(value: any) => setFormData({ ...formData, target_role: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Users</SelectItem>
-                    <SelectItem value="admin">Admins Only</SelectItem>
-                    <SelectItem value="manager">Managers Only</SelectItem>
-                    <SelectItem value="resident">Residents Only</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            <div>
+              <label className="text-sm font-medium">Target Audience</label>
+              <Select
+                value={formData.target_role}
+                onValueChange={(value: any) => setFormData({ ...formData, target_role: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Users</SelectItem>
+                  <SelectItem value="admin">Admins Only</SelectItem>
+                  <SelectItem value="manager">Managers Only</SelectItem>
+                  <SelectItem value="resident">Residents Only</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <div>
