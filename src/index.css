@@ -1,0 +1,130 @@
+/**
+ * =====================================
+ *    BUILDING MANAGEMENT DESIGN SYSTEM
+ * =====================================
+ * 
+ * Project: BuildingHub - Property Cost Management
+ * Type: Enterprise Management Platform
+ * 
+ * DESIGN PHILOSOPHY
+ * -----------------
+ * Core Principle: Professional clarity with approachable warmth
+ * Design Style: Modern Enterprise with subtle sophistication
+ * Emotion Goal: Trust, efficiency, and control
+ * 
+ * COLOR SYSTEM (HSL FORMAT)
+ * -------------
+ * Primary: 217 91% 60% - Professional blue for authority and trust
+ * Secondary: 210 17% 98% - Clean neutral background
+ * Accent: 24 100% 50% - Warm orange for financial highlights
+ * Success: 142 71% 45% - Green for positive states
+ * Warning: 38 92% 50% - Yellow for alerts
+ * Destructive: 0 84% 60% - Red for critical actions
+ * 
+ * TYPOGRAPHY
+ * ----------
+ * System: -apple-system, BlinkMacSystemFont, "Segoe UI"
+ * Display: 600-700 weight for headings
+ * Body: 400-500 weight for content
+ * 
+ * INTERACTIONS
+ * ------------
+ * Transitions: 200ms ease for micro-interactions
+ * Hover states: Subtle elevation and color shift
+ * Focus: Clear ring indicators for accessibility
+ * ====================================
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 17% 98%;
+    --foreground: 217 19% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 217 19% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 217 19% 12%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 17% 95%;
+    --secondary-foreground: 217 19% 12%;
+    --muted: 210 17% 95%;
+    --muted-foreground: 217 10% 46%;
+    --accent: 24 100% 50%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 20% 88%;
+    --input: 214 20% 88%;
+    --ring: 217 91% 60%;
+    --chart-1: 217 91% 60%;
+    --chart-2: 142 71% 45%;
+    --chart-3: 24 100% 50%;
+    --chart-4: 38 92% 50%;
+    --chart-5: 280 65% 60%;
+    --radius: 0.5rem;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 217 19% 12%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 17% 95%;
+    --sidebar-accent-foreground: 217 19% 12%;
+    --sidebar-border: 214 20% 88%;
+    --sidebar-ring: 217 91% 60%;
+  }
+  
+  .dark {
+    --background: 217 19% 9%;
+    --foreground: 210 17% 98%;
+    --card: 217 19% 12%;
+    --card-foreground: 210 17% 98%;
+    --popover: 217 19% 12%;
+    --popover-foreground: 210 17% 98%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 19% 16%;
+    --secondary-foreground: 210 17% 98%;
+    --muted: 217 19% 16%;
+    --muted-foreground: 217 10% 64%;
+    --accent: 24 100% 50%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 217 19% 20%;
+    --input: 217 19% 20%;
+    --ring: 217 91% 60%;
+    --chart-1: 217 91% 60%;
+    --chart-2: 142 71% 45%;
+    --chart-3: 24 100% 50%;
+    --chart-4: 38 92% 50%;
+    --chart-5: 280 65% 60%;
+    --sidebar-background: 217 19% 12%;
+    --sidebar-foreground: 210 17% 98%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 217 19% 16%;
+    --sidebar-accent-foreground: 210 17% 98%;
+    --sidebar-border: 217 19% 20%;
+    --sidebar-ring: 217 91% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-align: justify; /* fallback for older browsers */
+    text-wrap: balance;
+  }
+}
