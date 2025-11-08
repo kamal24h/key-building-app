@@ -2,7 +2,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
-import BuildingsPage from './pages/BuildingsPage';
+//import BuildingsPage from './pages/BuildingsPage';
+import Buildings from './pages/Buildings';
 import ManagersPage from './pages/ManagersPage';
 import UnitsPage from './pages/UnitsPage';
 import ResidentsPage from './pages/ResidentsPage';
@@ -18,15 +19,19 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { Toaster } from './components/ui/toaster';
 import { TooltipProvider } from './components/ui/tooltip';
 import { useAuthStore } from './store/auth-store';
+import BuildingsPage from './pages/BuildingsPage';
 
 function App() {
   const { isAuthenticated } = useAuthStore();
 
   return (
+    // <Buildings />
+
     <TooltipProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <HomePage />} />
+          <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Buildings />} />
+          {/* <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <HomePage />} /> */}
           <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
           <Route path="/unauthorized" element={<UnauthorizedPage />} />
           
