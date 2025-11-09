@@ -4,11 +4,10 @@ interface house {
   buildingId: number;
   name: string;
   address: string;
-  total_units: number;
-  managerId?: string;
-  manager_name?: string;
-  status: 'active' | 'inactive' | 'under_construction';
-  created_at: string;
+  totalUnits: number;
+  managerId?: string;  
+  // status: 'active' | 'inactive' | 'under_construction';
+  createdAt: string;
 }
 
 function BuildingTable() {
@@ -20,7 +19,7 @@ function BuildingTable() {
   useEffect(() => {
     fetch('https://localhost:7207/api/building/all') // example API
       .then(response => response.json())
-      .then(data => {
+      .then(data => {        
         setHouses(data);
         setLoading(false);
       })
@@ -40,19 +39,19 @@ function BuildingTable() {
       <table cellPadding="10" cellSpacing="0">
         <thead>
           <tr>
-            <th>BuildingId</th>
+            <th>Building ID</th>
             <th>Name</th>
             <th>Address</th>
-            <th>ManagerId</th>
+            <th>Manager ID</th>
           </tr>
         </thead>
         <tbody>
-          {houses.map(house => (
-            <tr key={house.buildingId}>
-              <td>{house.buildingId}</td>
-              <td>{house.name}</td>
-              <td>{house.address}</td>
-              <td>{house.managerId}</td>
+          {houses.map( item => (
+            <tr key={item.buildingId}>
+              <td>{item.buildingId}</td>
+              <td>{item.name}</td>
+              <td>{item.address}</td>
+              <td>{item.managerId}</td>
             </tr>
           ))}
         </tbody>

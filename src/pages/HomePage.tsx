@@ -1,6 +1,6 @@
 import { Building2, Shield, Users, TrendingUp, ArrowRight } from 'lucide-react';
 import { Button } from '../components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { Card, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { useNavigate } from 'react-router-dom';
 
 export default function HomePage() {
