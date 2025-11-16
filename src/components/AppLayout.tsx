@@ -258,5 +258,6 @@ export default function AppLayout() {
         </main>
       </SidebarInset>
     </SidebarProvider>
+    
   );
 }

@@ -32,7 +32,7 @@ function App() {
     <TooltipProvider>
       <BrowserRouter>
         <Routes>
-          {/* <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <UserTable />} /> */}
+          {/* <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <CostsPage />} /> */}
           <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Buildings1 />} />
           {/* <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <HomePage />} /> */}
           <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />} />

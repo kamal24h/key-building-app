@@ -256,7 +256,7 @@ export default function CostsPage() {
           <h1 className="text-3xl font-bold tracking-tight">Building Costs</h1>
           <p className="text-muted-foreground mt-1">Track and manage building expenses</p>
         </div>
-        {role === 'admin' || role === 'manager' ? (
+        
           <Dialog open={isDialogOpen} onOpenChange={handleDialogChange}>
             <DialogTrigger asChild>
               <Button>
@@ -385,7 +385,7 @@ export default function CostsPage() {
               </form>
             </DialogContent>
           </Dialog>
-        ) : null}
+        
       </div>
 
       {/* Statistics Cards */}
