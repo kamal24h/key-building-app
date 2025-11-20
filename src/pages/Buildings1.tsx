@@ -210,17 +210,17 @@ const Buildings1: React.FC = () => {
             <DialogTrigger asChild>
               <Button>
                 <Plus className="mr-2 h-4 w-4" />
-                Add Cost
+                افزودن ساختمان
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogContent dir='rtl' className="max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>{editingBuilding ? 'Edit Building' : 'Add New Building'}</DialogTitle>
+                <DialogTitle>{editingBuilding ? 'ویرایش ساختمان' : 'ساختمان جدید'}</DialogTitle>
                 <DialogDescription>
-                  {editingBuilding ? 'Update Building information' : 'Record a new building Information'}
+                  {editingBuilding ? 'ویرایش اطلاعات' : 'ثبت اطلاعات ساختمان'}
                 </DialogDescription>
               </DialogHeader>
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form dir='rtl' onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="building_id">ساختمان *</Label>
@@ -273,7 +273,7 @@ const Buildings1: React.FC = () => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="managerId">managerId *</Label>
+                    <Label htmlFor="managerId">مدیر ساختمان *</Label>
                     <Input
                       id="managerId"
                       type="number"
@@ -285,7 +285,7 @@ const Buildings1: React.FC = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="createdAt">تاریخ ایجاد *</Label>
+                    <Label htmlFor="createdAt">تاریخ ثبت *</Label>
                     <Input
                       id="createdAt"
                       type="date"
@@ -320,14 +320,14 @@ const Buildings1: React.FC = () => {
                     id="address"
                     value={formData.address}
                     onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                    placeholder="Additional notes or details"
+                    placeholder="آدرس ساختمان"
                     rows={3}
                   />
                 </div>
 
                 <DialogFooter>
                   <Button type="button" variant="outline" onClick={() => handleDialogChange(false)}>
-                    Cancel
+                    لغو
                   </Button>
                   <Button type="submit">{editingBuilding ? ' ویرایش' : ' ثبت'} ساختمان</Button>
                 </DialogFooter>
@@ -386,7 +386,7 @@ const Buildings1: React.FC = () => {
       </div>
       
       <div className="mt-4 text-sm text-gray-600">
-        Showing {houses.length} buildings.
+        نمایش {houses.length} ساختمان.
       </div>
     </div>
   );

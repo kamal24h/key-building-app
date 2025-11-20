@@ -24,7 +24,7 @@ function BuildingTable() {
         setLoading(false);
       })
       .catch(error => {
-        console.error('Error fetching data:', error);
+        console.error('خطا در دسترسی به سرویسهای برنامه:', error);
         setLoading(false);
       });
   }, []);
