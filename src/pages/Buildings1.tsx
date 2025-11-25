@@ -81,31 +81,31 @@ const Buildings1: React.FC = () => {
       setIsDialogOpen(true);
     };
   
-    // const handleDelete = async (id: string) => {
-    //   if (!confirm('Are you sure you want to delete this cost?')) return;
+    const handleDelete = async (id: number) => {
+      if (!confirm('Are you sure you want to delete this building?')) return;
   
-    //   try {
-    //     const cost = costs.find(c => c._id === id);
-    //     if (!cost) return;
+      try {
+        const building = houses.find(c => c.buildingId === id);
+        if (!building) return;
         
-    //     await table.deleteItem('f24hstw6yk1s', {
-    //       _uid: user?.uid || '',
-    //       _id: id,
-    //     });
-    //     toast({
-    //       title: 'Success',
-    //       description: 'Cost deleted successfully',
-    //     });
-    //     loadData();
-    //   } catch (error) {
-    //     console.error('Error deleting cost:', error);
-    //     toast({
-    //       title: 'Error',
-    //       description: 'Failed to delete cost',
-    //       variant: 'destructive',
-    //     });
-    //   }
-    // };
+        // await table.deleteItem('f24hstw6yk1s', {
+        //   _uid: user?.uid || '',
+        //   _id: id,
+        // });
+        toast({
+          title: 'Success',
+          description: 'Building deleted successfully',
+        });
+        fetchBuildings();
+      } catch (error) {
+        console.error('Error deleting building:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to delete Building',
+          variant: 'destructive',
+        });
+      }
+    };
 
   const resetForm = () => {
     setEditingBuilding(null);
@@ -374,9 +374,9 @@ const Buildings1: React.FC = () => {
                             <Button variant="ghost" size="icon" onClick={() => handleEdit(item)}>
                               <Edit className="h-4 w-4" />
                             </Button>
-                            {/* <Button variant="ghost" size="icon" onClick={() => handleDelete(item.buildingId)}>
+                            <Button variant="ghost" size="icon" onClick={() => handleDelete(item.buildingId)}>
                               <Trash2 className="h-4 w-4" />
-                            </Button> */}
+                            </Button>
                           </div>
                 </td>
               </tr>

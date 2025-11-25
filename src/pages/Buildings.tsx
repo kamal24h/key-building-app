@@ -1,63 +1,55 @@
-import React, { useEffect, useState } from 'react';
+// import React, { useState } from 'react';
+// import { House1 } from '../types/types';
+// import axios from 'axios';
 
-interface house {
-  buildingId: number;
-  name: string;
-  address: string;
-  totalUnits: number;
-  managerId?: string;  
-  // status: 'active' | 'inactive' | 'under_construction';
-  createdAt: string;
-}
+// const CreateBuilding = () => {
+  
+//   const [building, setBuilding] = useState<House1[]>([]);
 
-function BuildingTable() {
-  const [houses, setHouses] = useState<house[]>([]);
-  const [loading, setLoading] = useState(true);
+//   const handleSubmit = async (e: { preventDefault: () => void; }) => {
+//     e.preventDefault();
+    
+//     const validateForm = () => {
+//     const newErrors = {};
+    
+//     if (!formData.name.trim()) {
+//       newErrors.name = 'Name is required';
+//     }
+    
+//     if (!formData.email.trim()) {
+//       newErrors.email = 'Email is required';
+//     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+//       newErrors.email = 'Email is invalid';
+//     }
+    
+//     if (!formData.password) {
+//       newErrors.password = 'Password is required';
+//     } else if (formData.password.length < 6) {
+//       newErrors.password = 'Password must be at least 6 characters';
+//     }
+    
+//     return newErrors;
+//   };
 
+//     try {
+//       const response = await axios.post('https://localhost:7207/api/building', building, {
+//         headers: {
+//           'Content-Type': 'application/json',
+//           //'Authorization': 'Bearer your-token' // if needed
+//         }
+//       });
+      
+//       console.log('Building created:', response.data);
+//       // Reset form or handle success
+      
+//     } catch (error) {
+//       console.error('Error creating product:', error);
+//     }
+//   };
 
-  // Fetch data from an API when component mounts
-  useEffect(() => {
-    fetch('https://localhost:7207/api/building/all') // example API
-      .then(response => response.json())
-      .then(data => {        
-        setHouses(data);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('خطا در دسترسی به سرویسهای برنامه:', error);
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  return (
-    <div style={{ padding: '20px' }}>
-      <h2>Building List</h2>
-      <table cellPadding="10" cellSpacing="0">
-        <thead>
-          <tr>
-            <th>Building ID</th>
-            <th>Name</th>
-            <th>Address</th>
-            <th>Manager ID</th>
-          </tr>
-        </thead>
-        <tbody>
-          {houses.map( item => (
-            <tr key={item.buildingId}>
-              <td>{item.buildingId}</td>
-              <td>{item.name}</td>
-              <td>{item.address}</td>
-              <td>{item.managerId}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
-export default BuildingTable;
+//   return (
+//     <form onSubmit={handleSubmit}>
+//       {/* Form fields similar to above example */}
+//     </form>
+//   );
+// };
