@@ -5,7 +5,7 @@ interface House1 {
   address: string;
   totalUnits: number;
   managerId?: string;  
-  // status: 'active' | 'inactive' | 'under_construction';
+  status: 'active' | 'inactive' | 'under_construction';
   createdAt: string;
 }
 
@@ -15,9 +15,22 @@ export { House1 };
 //   houses1: House1[];
 // }
 
+
+export interface Resident {
+  residentId: number;
+  residentGuid: string;
+  name: string;
+  family: string;
+  userName: string;
+  password: string;
+  active: boolean;
+  createdAt: string;
+}
+
 export interface User {
   id: number;
   name: string;
+  family: string;
   email: string;
   phone: string;
   website: string;

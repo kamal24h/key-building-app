@@ -21,14 +21,14 @@ import { TooltipProvider } from './components/ui/tooltip';
 import { useAuthStore } from './store/auth-store';
 import BuildingsPage from './pages/BuildingsPage';
 //import UserTable from './pages/UserTable';
-import Buildings1 from './pages/Buildings1';
+
 
 function App() {
   const { isAuthenticated } = useAuthStore();
 
   return (
-    <Buildings1 />
-
+    // <Buildings/>
+    <ResidentsPage/>
     // <TooltipProvider>
     //   <BrowserRouter>
     //     <Routes>
