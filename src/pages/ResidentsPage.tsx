@@ -14,7 +14,7 @@ import { Plus, Edit, Trash2 } from "lucide-react";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { useToast } from "../hooks/use-toast";
-import { Textarea } from "../components/ui/textarea";
+//import { Textarea } from "../components/ui/textarea";
 
 const ResidentsPage: React.FC = () => {
   const [residents, setResidents] = useState<Resident[]>([]);
@@ -281,13 +281,15 @@ const ResidentsPage: React.FC = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="userName">نام کاربری</Label>
-                  <Textarea
+                  {/* <Textarea */}
+                  <input
                     id="userName"
                     value={formData.userName}
                     onChange={(e) =>
                       setFormData({ ...formData, userName: e.target.value })
                     }
                     placeholder="نام کاربری"
+                    // rows={2}
                   />
                 </div>
 
